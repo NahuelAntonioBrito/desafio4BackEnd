@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
             newList = productsList;
         }
 
-        res.status(201).render ( 'home', {newList} );
+        res.status(201).json({status: 'success', payload: newList});
     } catch (error) {
         console.error('Error:', error);
         res.json({status: 'error', error: 'Internal server error'});

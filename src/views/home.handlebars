@@ -1,15 +1,20 @@
 <div>
+    <h2>Products</h2>
     <table>
         <tr>
             <td>Titulo</td>
+            <td>Descripción</td>
             <td>Precio</td>
-            <td>Categoria</td>
+            <td>Codigo</td>
+            <td>Categoría</td>
             <td>Stock</td>
         </tr>
-        {{#each newList}}
+        {{#each products}}
         <tr>
             <td>{{ this.title }}</td>
+            <td>{{ this.description }}</td>
             <td>{{ this.price }}</td>
+            <td>{{ this.code }}</td>
             <td>{{ this.category }}</td>
             <td>{{ this.stock }}</td>
         </tr>
