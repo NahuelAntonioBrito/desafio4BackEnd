@@ -12,14 +12,15 @@ document.getElementById('createBtn').addEventListener('click', () => {
         stock: document.getElementById('stock').value,
         category: document.getElementById('category').value,
     }
-    fetch(`/api/products`, {
+    fetch('/api/products', {
         method: 'post',
         body: JSON.stringify(body),
         headers: {
             'Content-type': 'application/json'
         },
     })
-        .then(result => result.json())
+        .then(result => console.log(result.json()))
+        
         .then(result => {
             if (result.status === 'error') throw new Error(result.error)
         })
@@ -27,6 +28,7 @@ document.getElementById('createBtn').addEventListener('click', () => {
         .then(result => result.json())
         .then(result => {
             socket.emit('productList', result.payload)
+            console.log(result.payload)
             document.getElementById('title').value = ''
             document.getElementById('description').value = ''
             document.getElementById('price').value = ''
@@ -41,14 +43,19 @@ deleteProduct = (id) => {
     fetch(`/api/products/${id}`, {
         method: 'delete',
     })
-        .then(result => {
-            if (result.status === 'error') throw new Error(result.error)
-            socket.emit('productList', result.payload)
-        })
-        .catch(err => console.log(`Ocurrió un error: ${err}`));
+    .then(result => {
+        if (result.status === 'error') throw new Error(result.error)
+        return result.json(); // Asegúrate de analizar la respuesta como JSON
+    })
+    .then(data => {
+        socket.emit('productList', data.payload); // Emite el evento después de que la eliminación sea exitosa
+        console.log("se elimino correctamente");
+        console.log(data.payload);
+    })
+    .catch(err => console.log(`Ocurrió un error: ${err}`));
 }
 
-socket.on('updateProducts', data => {
+socket.on('updateProducts', (data) => {
     // Verifica si data no es nulo y es un iterable (array)
     if (data !== null && Array.isArray(data)) {
         table.innerHTML = 
