@@ -19,26 +19,31 @@ class ProductManager {
     }
 
     async addProduct(product) {
-        try {
-            if (!product.title || !product.description || !product.price || !product.thumbnails || !product.status || !product.code || !product.stock || !product.category) {
-                return 'ERROR, debe llenar todos los campos';
-            }
     
-            if (!fs.existsSync(this.#products)) return 'ERROR, el archivo no existe';
+        if (
+            !product.title ||
+            !product.description ||
+            !product.price ||
+            !product.thumbnail ||
+            !product.code ||
+            !product.category ||
+            !product.stock
+        )
+            return "[ERR] require fields missing";
     
-            let data = await fs.promises.readFile(this.#products, 'utf-8');
-            let products = JSON.parse(data);
-            const flag = products.find(item => item.code === product.code);
-            if (flag) return 'ERROR, ese producto ya está agregado';
+        if (!fs.existsSync(this.#products)) return "[ERR] DB file does not exists";
     
-            const productoAdd = { id: this.#generateId(products),status: true, thumbnails: [], ...product };
-            products.push(productoAdd);
-            await fs.promises.writeFile(this.#products, JSON.stringify(products, null, 2));
+        let data = await fs.promises.readFile(this.#products, "utf-8");
+        let products = JSON.parse(data);
+        const found = products.find((i) => i.code === product.code);
     
-            return productoAdd;
-        } catch (error) {
-            return 'ERROR al agregar el producto: ' + error.message;
-        }
+        if (found) return "[ERR] code already exists";
+        //hardcodeo el status en true:
+        const productToAdd = { id: this.#generateId(products), status: true, ...product };
+        products.push(productToAdd);
+        
+        await fs.promises.writeFile(this.#products, JSON.stringify(products, null, 2));
+        return productToAdd;
     }
 
     async getProducts(){

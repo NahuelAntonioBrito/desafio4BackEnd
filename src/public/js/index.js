@@ -12,14 +12,15 @@ document.getElementById('createBtn').addEventListener('click', () => {
         stock: document.getElementById('stock').value,
         category: document.getElementById('category').value,
     }
+    console.log(body)
     fetch('/api/products', {
         method: 'post',
         body: JSON.stringify(body),
         headers: {
-            'Content-type': 'application/json'
+            'Content-Type': 'application/json'
         },
     })
-        .then(result => console.log(result.json()))
+    .then(response => response.json())
         
         .then(result => {
             if (result.status === 'error') throw new Error(result.error)
